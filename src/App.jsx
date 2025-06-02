@@ -7,6 +7,8 @@ import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart'; 
 import ShopPage from './pages/ShopPage';
+import Contact from './pages/Contact';
+import Team from './pages/Team';
 
 export default function App() {
   return (
@@ -20,6 +22,8 @@ export default function App() {
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/shop" element={<ShopPage />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/team" element={<Team />} />
           </Routes>
         </PageContent>
         <Footer />
