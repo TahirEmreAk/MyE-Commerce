@@ -5,7 +5,8 @@ import PageContent from './layout/PageContent';
 import HomePage from './pages/HomePage';
 import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';
-import Cart from './pages/Cart';
+import Cart from './pages/Cart'; 
+import ShopPage from './pages/ShopPage';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
             <Route path="/products" element={<ProductList />} />
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/shop" element={<ShopPage />} />
           </Routes>
         </PageContent>
         <Footer />
