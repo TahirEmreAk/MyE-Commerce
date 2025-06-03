@@ -9,6 +9,7 @@ import Cart from './pages/Cart';
 import ShopPage from './pages/ShopPage';
 import Contact from './pages/Contact';
 import Team from './pages/Team';
+import AboutUs from './pages/AboutUs';
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
             <Route path="/shop" element={<ShopPage />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/team" element={<Team />} />
+            <Route path="/about" element={<AboutUs />} />
           </Routes>
         </PageContent>
         <Footer />

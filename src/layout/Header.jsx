@@ -18,6 +18,7 @@ export default function Header() {
                     <Link to="/" className="text-[#737373] hover:text-[#252B42]">Ana Sayfa</Link>
                     <Link to="/shop" className="text-[#737373] hover:text-[#252B42]">Mağaza</Link>
                     <Link to="/products" className="text-[#737373] hover:text-[#252B42]">Ürünler</Link>
+                    <Link to="/about" className="text-[#737373] hover:text-[#252B42]">Hakkımızda</Link>
                     <Link to="/team" className="text-[#737373] hover:text-[#252B42]">Takım</Link>
                     <Link to="/contact" className="text-[#737373] hover:text-[#252B42]">İletişim</Link>
                 </nav>
@@ -70,6 +71,13 @@ export default function Header() {
                         onClick={() => setMobileMenuOpen(false)}
                     >
                         Ürünler
+                    </Link>
+                    <Link 
+                        to="/about" 
+                        className="block py-2 text-[#737373] hover:text-[#252B42]"
+                        onClick={() => setMobileMenuOpen(false)}
+                    >
+                        Hakkımızda
                     </Link>
                     <Link 
                         to="/team" 
