@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import Header from './layout/Header';
 import Footer from './layout/Footer';
 import PageContent from './layout/PageContent';
@@ -14,8 +16,16 @@ import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { verifyToken } from './store/actions/userActions';
 
 export default function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Uygulama başlangıcında token kontrolü
+    dispatch(verifyToken());
+  }, [dispatch]);
+
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <div className="flex flex-col min-h-screen">
