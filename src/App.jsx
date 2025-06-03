@@ -11,6 +11,9 @@ import Contact from './pages/Contact';
 import Team from './pages/Team';
 import AboutUs from './pages/AboutUs';
 import SignUp from './pages/SignUp';
+import Login from './pages/Login';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function App() {
   return (
@@ -28,9 +31,11 @@ export default function App() {
             <Route path="/team" element={<Team />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </PageContent>
         <Footer />
+        <ToastContainer position="top-right" autoClose={3000} />
       </div>
     </Router>
   );

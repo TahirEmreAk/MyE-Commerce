@@ -1,10 +1,19 @@
-import { Menu, ShoppingCart, Search, User } from 'lucide-react';
+import React from 'react';
+import { Menu, ShoppingCart, Search, User, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Phone, Mail, Instagram, Youtube, Facebook, Twitter } from 'lucide-react';
+import { useSelector, useDispatch } from 'react-redux';
+import { logoutUser } from '../store/actions/userActions';
 
-export default function Header() {
+const Header = () => {
+    const dispatch = useDispatch();
+    const { currentUser, isAuthenticated } = useSelector(state => state.user);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    const handleLogout = () => {
+        dispatch(logoutUser());
+    };
 
     return (
         <header className="w-full">
@@ -74,12 +83,34 @@ export default function Header() {
                     </nav>
 
                     <div className="flex items-center space-x-4 mt-4 md:mt-0">
-                        <Link to="/login" className="text-[#23A6F0] hover:text-[#2A7CC7]">
-                            Giriş Yap
-                        </Link>
-                        <Link to="/signup" className="text-[#23A6F0] hover:text-[#2A7CC7]">
-                            Kayıt Ol
-                        </Link>
+                        {isAuthenticated ? (
+                            <>
+                                <div className="flex items-center space-x-2">
+                                    <img
+                                        src={currentUser.gravatarUrl}
+                                        alt={currentUser.name}
+                                        className="w-8 h-8 rounded-full"
+                                    />
+                                    <span className="text-[#252B42]">{currentUser.name}</span>
+                                </div>
+                                <button
+                                    onClick={handleLogout}
+                                    className="text-[#23A6F0] hover:text-[#2A7CC7] flex items-center"
+                                >
+                                    <LogOut size={20} className="mr-1" />
+                                    Çıkış
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login" className="text-[#23A6F0] hover:text-[#2A7CC7]">
+                                    Giriş Yap
+                                </Link>
+                                <Link to="/signup" className="text-[#23A6F0] hover:text-[#2A7CC7]">
+                                    Kayıt Ol
+                                </Link>
+                            </>
+                        )}
                         <Link to="/cart" className="text-[#23A6F0] hover:text-[#2A7CC7]">
                             <ShoppingCart size={20} />
                         </Link>
@@ -88,4 +119,6 @@ export default function Header() {
             </div>
         </header>
     );
-}
+};
+
+export default Header;
