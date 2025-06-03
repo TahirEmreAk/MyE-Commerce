@@ -1,100 +1,91 @@
 import { Menu, ShoppingCart, Search, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { Phone, Mail, Instagram, Youtube, Facebook, Twitter } from 'lucide-react';
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
-        <header className="flex items-center justify-between p-4 bg-white shadow-md">
-            <div className="flex items-center space-x-4">
-                <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                    <Menu size={24} />
-                </button>
-                <Link to="/" className="text-xl font-bold">
-                    E-Commerce
-                </Link>
-                <nav className="hidden md:flex items-center space-x-4">
-                    <Link to="/" className="text-[#737373] hover:text-[#252B42]">Ana Sayfa</Link>
-                    <Link to="/shop" className="text-[#737373] hover:text-[#252B42]">Mağaza</Link>
-                    <Link to="/products" className="text-[#737373] hover:text-[#252B42]">Ürünler</Link>
-                    <Link to="/about" className="text-[#737373] hover:text-[#252B42]">Hakkımızda</Link>
-                    <Link to="/team" className="text-[#737373] hover:text-[#252B42]">Takım</Link>
-                    <Link to="/contact" className="text-[#737373] hover:text-[#252B42]">İletişim</Link>
-                </nav>
-            </div>
-
-            <div className="hidden md:flex flex-1 max-w-xl mx-4">
-                <div className="relative flex w-full">
-                    <input
-                        type="text"
-                        placeholder="Search products..."
-                        className="w-full px-4 py-2 border rounded-l-lg focus:outline-none"
-                    />
-                    <button className="px-4 py-2 bg-[#23A6F0] text-white rounded-r-lg hover:bg-[#2A7CC7]">
-                        <Search size={20} />
-                    </button>
+        <header className="w-full">
+            {/* Top Bar */}
+            <div className="bg-[#252B42] text-white py-3">
+                <div className="container mx-auto px-4">
+                    <div className="flex flex-col md:flex-row justify-between items-center">
+                        <div className="flex items-center space-x-8">
+                            <div className="flex items-center">
+                                <Phone size={16} className="mr-2" />
+                                <span>(225) 555-0118</span>
+                            </div>
+                            <div className="flex items-center">
+                                <Mail size={16} className="mr-2" />
+                                <span>michelle.rivera@example.com</span>
+                            </div>
+                        </div>
+                        <div className="mt-2 md:mt-0">
+                            <p>Follow Us and get a chance to win 80% off</p>
+                        </div>
+                        <div className="flex items-center space-x-4 mt-2 md:mt-0">
+                            <span>Follow Us :</span>
+                            <Instagram size={16} />
+                            <Youtube size={16} />
+                            <Facebook size={16} />
+                            <Twitter size={16} />
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="flex items-center space-x-4">
-                <Link to="/cart" className="relative">
-                    <ShoppingCart size={24} className="text-[#252B42]" />
-                    <span className="absolute -top-2 -right-2 bg-[#E51F5A] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                        0
-                    </span>
-                </Link>
-                <button>
-                    <User size={24} className="text-[#252B42]" />
-                </button>
-            </div>
+            {/* Main Header */}
+            <div className="container mx-auto px-4 py-4">
+                <div className="flex flex-col md:flex-row justify-between items-center">
+                    <Link to="/" className="text-2xl font-bold text-[#252B42]">
+                        Bandage
+                    </Link>
 
-            {mobileMenuOpen && (
-                <div className="md:hidden fixed top-[64px] left-0 right-0 bg-white shadow-lg p-4 z-50">
-                    <Link 
-                        to="/" 
-                        className="block py-2 text-[#737373] hover:text-[#252B42]"
-                        onClick={() => setMobileMenuOpen(false)}
-                    >
-                        Ana Sayfa
-                    </Link>
-                    <Link 
-                        to="/shop" 
-                        className="block py-2 text-[#737373] hover:text-[#252B42]"
-                        onClick={() => setMobileMenuOpen(false)}
-                    >
-                        Mağaza
-                    </Link>
-                    <Link 
-                        to="/products" 
-                        className="block py-2 text-[#737373] hover:text-[#252B42]"
-                        onClick={() => setMobileMenuOpen(false)}
-                    >
-                        Ürünler
-                    </Link>
-                    <Link 
-                        to="/about" 
-                        className="block py-2 text-[#737373] hover:text-[#252B42]"
-                        onClick={() => setMobileMenuOpen(false)}
-                    >
-                        Hakkımızda
-                    </Link>
-                    <Link 
-                        to="/team" 
-                        className="block py-2 text-[#737373] hover:text-[#252B42]"
-                        onClick={() => setMobileMenuOpen(false)}
-                    >
-                        Takım
-                    </Link>
-                    <Link 
-                        to="/contact" 
-                        className="block py-2 text-[#737373] hover:text-[#252B42]"
-                        onClick={() => setMobileMenuOpen(false)}
-                    >
-                        İletişim
-                    </Link>
+                    <nav className="mt-4 md:mt-0">
+                        <ul className="flex space-x-6 items-center">
+                            <li>
+                                <Link to="/" className="text-[#737373] hover:text-[#252B42]">
+                                    Ana Sayfa
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/shop" className="text-[#737373] hover:text-[#252B42]">
+                                    Mağaza
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/about" className="text-[#737373] hover:text-[#252B42]">
+                                    Hakkımızda
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/contact" className="text-[#737373] hover:text-[#252B42]">
+                                    İletişim
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/team" className="text-[#737373] hover:text-[#252B42]">
+                                    Takım
+                                </Link>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <div className="flex items-center space-x-4 mt-4 md:mt-0">
+                        <Link to="/login" className="text-[#23A6F0] hover:text-[#2A7CC7]">
+                            Giriş Yap
+                        </Link>
+                        <Link to="/signup" className="text-[#23A6F0] hover:text-[#2A7CC7]">
+                            Kayıt Ol
+                        </Link>
+                        <Link to="/cart" className="text-[#23A6F0] hover:text-[#2A7CC7]">
+                            <ShoppingCart size={20} />
+                        </Link>
+                    </div>
                 </div>
-            )}
+            </div>
         </header>
     );
 }

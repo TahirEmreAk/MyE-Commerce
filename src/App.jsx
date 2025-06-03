@@ -10,6 +10,7 @@ import ShopPage from './pages/ShopPage';
 import Contact from './pages/Contact';
 import Team from './pages/Team';
 import AboutUs from './pages/AboutUs';
+import SignUp from './pages/SignUp';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/team" element={<Team />} />
             <Route path="/about" element={<AboutUs />} />
+            <Route path="/signup" element={<SignUp />} />
           </Routes>
         </PageContent>
         <Footer />
