@@ -6,7 +6,10 @@ import {
   SET_ERROR,
   SET_LIMIT,
   SET_OFFSET,
-  SET_FILTER
+  SET_FILTER,
+  SET_PRODUCT_CATEGORY_ID,
+  SET_PRODUCT_SORT,
+  SET_PRODUCT_FILTER
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -17,7 +20,10 @@ const initialState = {
   error: null,
   limit: 25,
   offset: 0,
-  filter: ''
+  filter: '',
+  categoryId: null,
+  sort: '',
+  filterText: ''
 };
 
 const productReducer = (state = initialState, action) => {
@@ -61,6 +67,21 @@ const productReducer = (state = initialState, action) => {
       return {
         ...state,
         filter: action.payload
+      };
+    case SET_PRODUCT_CATEGORY_ID:
+      return {
+        ...state,
+        categoryId: action.payload
+      };
+    case SET_PRODUCT_SORT:
+      return {
+        ...state,
+        sort: action.payload
+      };
+    case SET_PRODUCT_FILTER:
+      return {
+        ...state,
+        filterText: action.payload
       };
     default:
       return state;

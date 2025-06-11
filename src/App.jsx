@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import Header from './layout/Header';
@@ -18,6 +18,8 @@ import ShoppingPage from './pages/ShoppingPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { verifyToken } from './store/actions/userActions';
+import { Provider } from 'react-redux';
+import store from './store';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -28,27 +30,29 @@ export default function App() {
   }, [dispatch]);
 
   return (
-    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <PageContent>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/products" element={<ProductList />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/shop" element={<ShopPage />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/team" element={<Team />} />
-            <Route path="/about" element={<AboutUs />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/shopping" element={<ShoppingPage />} />
-          </Routes>
-        </PageContent>
-        <Footer />
+    <Provider store={store}>
+      <BrowserRouter>
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <PageContent>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/products" element={<ProductList />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/shop" element={<ShopPage />} />
+              <Route path="/shop/:gender/:categoryName/:categoryId" element={<ShoppingPage />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/team" element={<Team />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/login" element={<Login />} />
+            </Routes>
+          </PageContent>
+          <Footer />
+        </div>
         <ToastContainer position="top-right" autoClose={3000} />
-      </div>
-    </Router>
+      </BrowserRouter>
+    </Provider>
   );
 }

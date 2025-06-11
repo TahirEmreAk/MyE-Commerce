@@ -29,13 +29,13 @@ const TopCategories = () => {
               >
                 <div className="relative overflow-hidden rounded-lg aspect-square">
                   <img
-                    src={category.image || `https://via.placeholder.com/300x300?text=${category.name}`}
-                    alt={category.name}
+                    src={category.image || `https://via.placeholder.com/300x300?text=${category.title}`}
+                    alt={category.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
                     <h3 className="text-white text-xl font-semibold text-center">
-                      {category.name}
+                      {category.title}
                     </h3>
                   </div>
                 </div>

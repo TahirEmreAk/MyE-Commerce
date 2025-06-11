@@ -24,15 +24,17 @@ const CategoryMenu = ({ title, categories }) => {
           onMouseEnter={() => setIsOpen(true)}
           onMouseLeave={() => setIsOpen(false)}
         >
-          {categories.map((category) => (
-            <Link
-              key={category.id}
-              to={`/shop/${genderPath}/${category.name.toLowerCase()}/${category.id}`}
-              className="block px-4 py-2 text-[#737373] hover:bg-gray-100 hover:text-[#252B42]"
-            >
-              {category.name}
-            </Link>
-          ))}
+          {categories
+            .filter(category => category && category.title)
+            .map((category) => (
+              <Link
+                key={category.id}
+                to={`/shop/${genderPath}/${category.title.toLowerCase()}/${category.id}`}
+                className="block px-4 py-2 text-[#737373] hover:bg-gray-100 hover:text-[#252B42]"
+              >
+                {category.title}
+              </Link>
+            ))}
         </div>
       )}
     </div>

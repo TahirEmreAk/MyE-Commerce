@@ -13,6 +13,9 @@ export const SET_ERROR = 'SET_ERROR';
 export const SET_LIMIT = 'SET_LIMIT';
 export const SET_OFFSET = 'SET_OFFSET';
 export const SET_FILTER = 'SET_FILTER';
+export const SET_PRODUCT_CATEGORY_ID = 'SET_PRODUCT_CATEGORY_ID';
+export const SET_PRODUCT_SORT = 'SET_PRODUCT_SORT';
+export const SET_PRODUCT_FILTER = 'SET_PRODUCT_FILTER';
 
 // Shopping Cart Action Types
 export const SET_CART = 'SET_CART';

@@ -1,3 +1,4 @@
+import axiosInstance from '../../api/axiosInstance';
 import {
   SET_CATEGORIES,
   SET_TOTAL,
@@ -6,9 +7,11 @@ import {
   SET_FILTER,
   SET_PRODUCTS,
   SET_LOADING,
-  SET_ERROR
+  SET_ERROR,
+  SET_PRODUCT_CATEGORY_ID,
+  SET_PRODUCT_SORT,
+  SET_PRODUCT_FILTER
 } from './actionTypes';
-import axiosInstance from '../../api/axiosInstance';
 
 export const setCategories = (categories) => ({
   type: SET_CATEGORIES,
@@ -50,10 +53,37 @@ export const setError = (error) => ({
   payload: error
 });
 
-export const fetchProducts = () => async (dispatch) => {
+export const setProductCategoryId = (categoryId) => ({
+  type: SET_PRODUCT_CATEGORY_ID,
+  payload: categoryId
+});
+
+export const setProductSort = (sort) => ({
+  type: SET_PRODUCT_SORT,
+  payload: sort
+});
+
+export const setProductFilter = (filterText) => ({
+  type: SET_PRODUCT_FILTER,
+  payload: filterText
+});
+
+export const fetchProducts = () => async (dispatch, getState) => {
   dispatch(setLoading(true));
   try {
-    const response = await axiosInstance.get('/products');
+    const { product } = getState();
+    const params = {};
+    if (product.categoryId) {
+      params.category = product.categoryId;
+    }
+    if (product.sort) {
+      params.sort = product.sort;
+    }
+    if (product.filterText) {
+      params.filter = product.filterText;
+    }
+
+    const response = await axiosInstance.get('/products', { params });
     dispatch(setProducts(response.data.products));
     dispatch(setTotal(response.data.total));
   } catch (error) {
