@@ -205,6 +205,13 @@ const Cart = () => {
 
         {/* Sepet Özeti */}
         <div className="lg:col-span-1">
+          <button
+            className={`w-full bg-orange-500 text-white py-3 rounded-lg mb-4 ${selectedCartItems.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-600'}`}
+            disabled={selectedCartItems.length === 0}
+          >
+            Sepeti Onayla <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block ml-1"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+
           <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
             <h2 className="text-xl font-semibold mb-4">Sipariş Özeti</h2>
             <div className="flex justify-between mb-2">
@@ -232,11 +239,23 @@ const Cart = () => {
                 <span className="font-semibold">Toplam (Seçilenler)</span>
                 <span className="font-semibold">₺{total.toFixed(2)}</span>
               </div>
+              <div className="mb-4">
+                <div className="flex items-center border rounded-lg overflow-hidden">
+                  <input
+                    type="text"
+                    placeholder="İndirim Kodu Gir"
+                    className="flex-1 p-3 outline-none"
+                  />
+                  <button className="bg-gray-200 text-gray-700 px-4 py-3 hover:bg-gray-300">
+                    Uygula
+                  </button>
+                </div>
+              </div>
               <button 
-                className={`w-full bg-primary-600 text-white py-2 rounded-lg ${selectedCartItems.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary-700'}`}
+                className={`w-full bg-orange-500 text-white py-2 rounded-lg ${selectedCartItems.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-600'}`}
                 disabled={selectedCartItems.length === 0}
               >
-                Ödemeye Geç
+                Sepeti Onayla <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block ml-1"><path d="m9 18 6-6-6-6"/></svg>
               </button>
             </div>
           </div>
@@ -289,7 +308,7 @@ const Cart = () => {
                       <p className="text-sm text-gray-600">₺{item.price.toFixed(2)}</p>
                       <button
                         onClick={() => dispatch(addToCart(item))}
-                        className="mt-2 w-full bg-red-500 text-white py-1 rounded hover:bg-red-600"
+                        className="mt-2 w-full bg-primary-600 text-white py-1 rounded hover:bg-primary-700"
                       >
                         Sepete Ekle
                       </button>
