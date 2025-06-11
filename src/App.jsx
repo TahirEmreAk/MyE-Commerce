@@ -14,6 +14,7 @@ import Team from './pages/Team';
 import AboutUs from './pages/AboutUs';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
+import ShoppingPage from './pages/ShoppingPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { verifyToken } from './store/actions/userActions';
@@ -42,6 +43,7 @@ export default function App() {
             <Route path="/about" element={<AboutUs />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/shopping" element={<ShoppingPage />} />
           </Routes>
         </PageContent>
         <Footer />

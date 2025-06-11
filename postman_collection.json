@@ -22,7 +22,7 @@
           }
         },
         {
-          "name": "Sign Up - Customer/Admin",
+          "name": "Sign Up - Store Admin",
           "request": {
             "method": "POST",
             "header": [
@@ -33,7 +33,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"Test123!@#\",\n    \"role_id\": \"1\"\n}"
+              "raw": "{\n    \"name\": \"Store Admin\",\n    \"email\": \"store@commerce.com\",\n    \"password\": \"123456\",\n    \"role_id\": 2,\n    \"store\": {\n        \"name\": \"Test Store\",\n        \"phone\": \"5551234567\",\n        \"tax_no\": \"T123456789\",\n        \"bank_account\": \"TR123456789012345678901234\"\n    }\n}"
             },
             "url": {
               "raw": "https://workintech-fe-ecommerce.onrender.com/signup",
@@ -44,7 +44,7 @@
           }
         },
         {
-          "name": "Sign Up - Store",
+          "name": "Login",
           "request": {
             "method": "POST",
             "header": [
@@ -55,13 +55,153 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Store Owner\",\n    \"email\": \"store@example.com\",\n    \"password\": \"Store123!@#\",\n    \"role_id\": \"2\",\n    \"store\": {\n        \"name\": \"My Store\",\n        \"phone\": \"5551234567\",\n        \"tax_no\": \"T123V456789\",\n        \"bank_account\": \"TR123456789012345678901234\"\n    }\n}"
+              "raw": "{\n    \"email\": \"store@commerce.com\",\n    \"password\": \"123456\"\n}"
             },
             "url": {
-              "raw": "https://workintech-fe-ecommerce.onrender.com/signup",
+              "raw": "https://workintech-fe-ecommerce.onrender.com/login",
               "protocol": "https",
               "host": ["workintech-fe-ecommerce", "onrender", "com"],
-              "path": ["signup"]
+              "path": ["login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/categories",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Add Category - Erkek Tişört",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Tişört\",\n    \"gender\": \"e\",\n    \"rating\": 5,\n    \"image\": \"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab\"\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/categories",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Add Category - Erkek Pantolon",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Pantolon\",\n    \"gender\": \"e\",\n    \"rating\": 4,\n    \"image\": \"https://images.unsplash.com/photo-1624378439575-d8705ad7ae80\"\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/categories",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Add Category - Kadın Elbise",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Elbise\",\n    \"gender\": \"k\",\n    \"rating\": 5,\n    \"image\": \"https://images.unsplash.com/photo-1595777457583-95e059d581b8\"\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/categories",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Add Category - Kadın Bluz",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Bluz\",\n    \"gender\": \"k\",\n    \"rating\": 4,\n    \"image\": \"https://images.unsplash.com/photo-1559334417-a57bd929f003\"\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/categories",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["categories"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
             }
           }
         }

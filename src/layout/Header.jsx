@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Menu, ShoppingCart, Search, User, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Phone, Mail, Instagram, Youtube, Facebook, Twitter } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../store/actions/userActions';
+import { fetchCategories } from '../store/actions/categoryActions';
+import CategoryMenu from '../components/CategoryMenu';
 
 const Header = () => {
     const dispatch = useDispatch();
     const { currentUser, isAuthenticated } = useSelector(state => state.user);
+    const { categories } = useSelector(state => state.categories);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    useEffect(() => {
+        dispatch(fetchCategories());
+    }, [dispatch]);
 
     const handleLogout = () => {
         dispatch(logoutUser());
@@ -60,9 +67,10 @@ const Header = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/shop" className="text-[#737373] hover:text-[#252B42]">
-                                    Mağaza
-                                </Link>
+                                <CategoryMenu title="Kadın" categories={categories.kadin || []} />
+                            </li>
+                            <li>
+                                <CategoryMenu title="Erkek" categories={categories.erkek || []} />
                             </li>
                             <li>
                                 <Link to="/about" className="text-[#737373] hover:text-[#252B42]">

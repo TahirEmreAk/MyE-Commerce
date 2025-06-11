@@ -1,9 +1,12 @@
 import { ChevronRight, ArrowRight } from 'lucide-react';
 import ProductCard from '../components/common/ProductCard';
+import React from 'react';
+import TopCategories from '../components/TopCategories';
 
 export default function HomePage() {
     return (
         <div className="flex flex-col">
+            <TopCategories />
             {/* 1. Header Section - mobile-shop-header-1 */}
             <section className="bg-blue-50 p-6">
                 <div className="container mx-auto">

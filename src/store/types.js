@@ -1,3 +1,8 @@
 // User Action Types
 export const SET_USER = 'SET_USER';
-export const CLEAR_USER = 'CLEAR_USER'; 
+export const CLEAR_USER = 'CLEAR_USER';
+
+// Category Action Types
+export const FETCH_CATEGORIES_START = 'FETCH_CATEGORIES_START';
+export const FETCH_CATEGORIES_SUCCESS = 'FETCH_CATEGORIES_SUCCESS';
+export const FETCH_CATEGORIES_FAILURE = 'FETCH_CATEGORIES_FAILURE'; 
