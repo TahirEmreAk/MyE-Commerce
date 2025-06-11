@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Menu, ShoppingCart, Search, User, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
 import { Phone, Mail, Instagram, Youtube, Facebook, Twitter } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../store/actions/userActions';
@@ -12,7 +11,9 @@ const Header = () => {
     const dispatch = useDispatch();
     const { currentUser, isAuthenticated } = useSelector(state => state.user);
     const { categories } = useSelector(state => state.categories);
+    const { cart } = useSelector(state => state.cart);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
 
     useEffect(() => {
         dispatch(fetchCategories());
@@ -21,6 +22,8 @@ const Header = () => {
     const handleLogout = () => {
         dispatch(logoutUser());
     };
+
+    const totalCartItems = cart.reduce((acc, item) => acc + item.count, 0);
 
     return (
         <header className="w-full">
@@ -119,9 +122,53 @@ const Header = () => {
                                 </Link>
                             </>
                         )}
-                        <Link to="/cart" className="text-[#23A6F0] hover:text-[#2A7CC7]">
-                            <ShoppingCart size={20} />
-                        </Link>
+                        <div 
+                            className="relative"
+                            onMouseEnter={() => setCartDropdownOpen(true)}
+                            onMouseLeave={() => setCartDropdownOpen(false)}
+                        >
+                            <Link to="/cart" className="text-[#23A6F0] hover:text-[#2A7CC7] flex items-center">
+                                <ShoppingCart size={20} />
+                                <span className="ml-1 font-bold text-red-500">{totalCartItems}</span>
+                            </Link>
+                            {cartDropdownOpen && ( 
+                                <div 
+                                    className="absolute right-0 top-full w-80 bg-white border border-gray-200 rounded-md shadow-lg z-50 p-4"
+                                >
+                                    <h3 className="font-bold text-lg mb-3">Sepetim ({totalCartItems} Ürün)</h3>
+                                    {cart.length === 0 ? (
+                                        <p className="text-gray-600">Sepetiniz boş.</p>
+                                    ) : (
+                                        <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
+                                            {cart.map(item => (
+                                                <div key={item.product.id} className="flex items-center gap-3 pb-3 border-b last:border-b-0">
+                                                    <img 
+                                                        src={item.product.images?.[0]?.url || 'https://via.placeholder.com/60x60?text=No+Image'}
+                                                        alt={item.product.name}
+                                                        className="w-16 h-16 object-cover rounded-md"
+                                                    />
+                                                    <div className="flex-1">
+                                                        <p className="font-semibold text-gray-800">{item.product.name}</p>
+                                                        <p className="text-sm text-gray-600">Adet: {item.count}</p>
+                                                        <p className="text-base font-bold text-blue-600">${item.product.price.toFixed(2)}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {cart.length > 0 && (
+                                        <div className="mt-4 flex justify-between gap-2">
+                                            <Link to="/cart" className="flex-1 text-center bg-gray-100 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-200 transition-colors font-medium">
+                                                Sepete Git
+                                            </Link>
+                                            <button className="flex-1 bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition-colors font-medium">
+                                                Siparişi Tamamla
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Star, Heart, Eye, ChevronLeft, ChevronRight, Loader2, ShoppingCart } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductDetail, fetchProducts } from '../store/actions/productActions';
+import { addToCart } from '../store/actions/cartActions';
 import ProductCard from '../components/common/ProductCard';
 
 const ProductDetail = () => {
@@ -68,6 +69,10 @@ const ProductDetail = () => {
 
   const prevImage = () => {
     setActiveImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
+  };
+
+  const handleAddToCart = () => {
+    dispatch(addToCart(product));
   };
 
   return (
@@ -183,8 +188,11 @@ const ProductDetail = () => {
 
             {/* Aksiyon Butonları */}
             <div className="flex gap-4 items-center">
-              <button className="bg-[#23A6F0] text-white py-3 px-6 rounded-md hover:bg-[#2A7CC7] transition-colors font-bold text-sm">
-                Select Options
+              <button 
+                onClick={handleAddToCart}
+                className="bg-[#23A6F0] text-white py-3 px-6 rounded-md hover:bg-[#2A7CC7] transition-colors font-bold text-sm"
+              >
+                Add to Cart
               </button>
               <button className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full hover:bg-gray-100 transition-colors text-gray-500">
                 <Heart size={20} />
