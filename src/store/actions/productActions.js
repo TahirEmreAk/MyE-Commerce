@@ -72,7 +72,10 @@ export const fetchProducts = () => async (dispatch, getState) => {
   dispatch(setLoading(true));
   try {
     const { product } = getState();
-    const params = {};
+    const params = {
+      limit: product.limit,
+      offset: product.offset
+    };
     if (product.categoryId) {
       params.category = product.categoryId;
     }

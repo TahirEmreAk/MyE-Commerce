@@ -193,10 +193,420 @@
       "name": "Products",
       "item": [
         {
-          "name": "Get Products",
+          "name": "Get Products (Default)",
           "request": {
             "method": "GET",
             "header": [],
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Get Products (Limit 10, Offset 0)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products?limit=10&offset=0",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Get Products (Limit 10, Offset 10)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products?limit=10&offset=10",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "10"
+                }
+              ],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Kadın Tişört",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Kadın Tişört - Desenli\",\n    \"description\": \"Yazlık ve rahat desenli tişört.\",\n    \"price\": 120.00,\n    \"stock\": 50,\n    \"category_id\": 1,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Kadin+Tisort+Desenli\"]\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Kadın Ayakkabı",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Kadın Spor Ayakkabı\",\n    \"description\": \"Günlük kullanıma uygun, şık spor ayakkabı.\",\n    \"price\": 350.00,\n    \"stock\": 30,\n    \"category_id\": 2,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Kadin+Spor+Ayakkabi\"]\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Kadın Ceket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Kadın Deri Ceket\",\n    \"description\": \"Şık ve modern deri ceket.\",\n    \"price\": 700.00,\n    \"stock\": 20,\n    \"category_id\": 3,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Kadin+Deri+Ceket\"]\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Kadın Elbise",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Kadın Yazlık Elbise\",\n    \"description\": \"Plaj ve günlük kullanıma uygun elbise.\",\n    \"price\": 250.00,\n    \"stock\": 40,\n    \"category_id\": 4,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Kadin+Yazlik+Elbise\"]\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Kadın Etek",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Kadın Kot Etek\",\n    \"description\": \"Modern kesim kot etek.\",\n    \"price\": 180.00,\n    \"stock\": 35,\n    \"category_id\": 5,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Kadin+Kot+Etek\"]\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Kadın Gömlek",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Kadın Şifon Gömlek\",\n    \"description\": \"Hafif ve şık şifon gömlek.\",\n    \"price\": 200.00,\n    \"stock\": 45,\n    \"category_id\": 6,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Kadin+Sifon+Gomlek\"]\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Kadın Kazak",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Kadın Triko Kazak\",\n    \"description\": \"Kışlık sıcak triko kazak.\",\n    \"price\": 280.00,\n    \"stock\": 25,\n    \"category_id\": 7,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Kadin+Triko+Kazak\"]\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Kadın Pantolon",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Kadın Kumaş Pantolon\",\n    \"description\": \"Ofis şıklığı için ideal kumaş pantolon.\",\n    \"price\": 300.00,\n    \"stock\": 30,\n    \"category_id\": 8,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Kadin+Kumas+Pantolon\"]\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Erkek Ayakkabı",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Erkek Klasik Ayakkabı\",\n    \"description\": \"Resmi durumlar için uygun klasik ayakkabı.\",\n    \"price\": 450.00,\n    \"stock\": 20,\n    \"category_id\": 9,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Erkek+Klasik+Ayakkabi\"]\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Erkek Ceket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Erkek Spor Ceket\",\n    \"description\": \"Günlük kullanıma uygun rahat ceket.\",\n    \"price\": 600.00,\n    \"stock\": 25,\n    \"category_id\": 10,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Erkek+Spor+Ceket\"]\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Erkek Gömlek",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Erkek Kot Gömlek\",\n    \"description\": \"Şık ve dayanıklı kot gömlek.\",\n    \"price\": 220.00,\n    \"stock\": 30,\n    \"category_id\": 11,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Erkek+Kot+Gomlek\"]\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Erkek Kazak",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Erkek Yün Kazak\",\n    \"description\": \"Soğuk havalar için ideal yün kazak.\",\n    \"price\": 320.00,\n    \"stock\": 28,\n    \"category_id\": 12,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Erkek+Yun+Kazak\"]\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Erkek Pantolon",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Erkek Kanvas Pantolon\",\n    \"description\": \"Günlük kullanıma uygun rahat pantolon.\",\n    \"price\": 270.00,\n    \"stock\": 33,\n    \"category_id\": 13,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Erkek+Kanvas+Pantolon\"]\n}"
+            },
+            "url": {
+              "raw": "https://workintech-fe-ecommerce.onrender.com/products",
+              "protocol": "https",
+              "host": ["workintech-fe-ecommerce", "onrender", "com"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Add Product - Erkek Tişört",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_name\": \"Erkek Spor Tişört\",\n    \"description\": \"Nefes alabilen kumaşlı spor tişört.\",\n    \"price\": 150.00,\n    \"stock\": 60,\n    \"category_id\": 14,\n    \"store_id\": 2,\n    \"images\": [\"https://via.placeholder.com/300x300?text=Erkek+Spor+Tisort\"]\n}"
+            },
             "url": {
               "raw": "https://workintech-fe-ecommerce.onrender.com/products",
               "protocol": "https",
