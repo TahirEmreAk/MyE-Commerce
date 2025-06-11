@@ -10,7 +10,11 @@ import {
   SET_ERROR,
   SET_PRODUCT_CATEGORY_ID,
   SET_PRODUCT_SORT,
-  SET_PRODUCT_FILTER
+  SET_PRODUCT_FILTER,
+  FETCH_PRODUCT_DETAIL_START,
+  SET_PRODUCT_DETAIL,
+  FETCH_PRODUCT_DETAIL_SUCCESS,
+  FETCH_PRODUCT_DETAIL_FAILURE
 } from './actionTypes';
 
 export const setCategories = (categories) => ({
@@ -67,6 +71,18 @@ export const setProductFilter = (filterText) => ({
   type: SET_PRODUCT_FILTER,
   payload: filterText
 });
+
+export const fetchProductDetail = (productId) => async (dispatch) => {
+  dispatch({ type: FETCH_PRODUCT_DETAIL_START });
+  try {
+    const response = await axiosInstance.get(`/products/${productId}`);
+    dispatch({ type: SET_PRODUCT_DETAIL, payload: response.data });
+    dispatch({ type: FETCH_PRODUCT_DETAIL_SUCCESS });
+  } catch (error) {
+    dispatch({ type: FETCH_PRODUCT_DETAIL_FAILURE, payload: error.message });
+    dispatch(setError(error.message));
+  }
+};
 
 export const fetchProducts = () => async (dispatch, getState) => {
   dispatch(setLoading(true));

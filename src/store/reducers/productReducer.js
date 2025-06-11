@@ -9,12 +9,17 @@ import {
   SET_FILTER,
   SET_PRODUCT_CATEGORY_ID,
   SET_PRODUCT_SORT,
-  SET_PRODUCT_FILTER
+  SET_PRODUCT_FILTER,
+  SET_PRODUCT_DETAIL,
+  FETCH_PRODUCT_DETAIL_START,
+  FETCH_PRODUCT_DETAIL_SUCCESS,
+  FETCH_PRODUCT_DETAIL_FAILURE
 } from '../actions/actionTypes';
 
 const initialState = {
   categories: [],
   products: [],
+  currentProduct: null,
   total: 0,
   loading: false,
   error: null,
@@ -82,6 +87,31 @@ const productReducer = (state = initialState, action) => {
       return {
         ...state,
         filterText: action.payload
+      };
+    case FETCH_PRODUCT_DETAIL_START:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        currentProduct: null
+      };
+    case SET_PRODUCT_DETAIL:
+      return {
+        ...state,
+        currentProduct: action.payload
+      };
+    case FETCH_PRODUCT_DETAIL_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null
+      };
+    case FETCH_PRODUCT_DETAIL_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        currentProduct: null
       };
     default:
       return state;
