@@ -1,9 +1,18 @@
 import { ChevronRight, ArrowRight } from 'lucide-react';
 import ProductCard from '../components/common/ProductCard';
-import React from 'react';
+import React, { useEffect } from 'react';
 import TopCategories from '../components/TopCategories';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '../store/actions/productActions';
 
 export default function HomePage() {
+    const dispatch = useDispatch();
+    const { products } = useSelector(state => state.product);
+
+    useEffect(() => {
+        dispatch(fetchProducts());
+    }, [dispatch]);
+
     return (
         <div className="flex flex-col">
             <TopCategories />
@@ -37,13 +46,8 @@ export default function HomePage() {
                 <div className="container mx-auto px-4">
                     <h2 className="text-2xl font-bold text-center mb-6">Top Product Of the Week</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {[1, 2, 3].map((item) => (
-                            <div key={item} className="bg-white p-4 rounded-lg shadow-sm">
-                                <div className="h-48 bg-gray-200 mb-4 rounded"></div>
-                                <button className="w-full py-2 border border-blue-500 text-blue-500 rounded hover:bg-blue-50">
-                                    EXPLORE ITEMS
-                                </button>
-                            </div>
+                        {products.slice(0, 3).map((product) => (
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
                 </div>
@@ -56,17 +60,8 @@ export default function HomePage() {
                     <p className="text-gray-600 text-center mb-8">Production trying to resolve the</p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {[1, 2, 3, 4].map((item) => (
-                            <div key={item} className="border rounded-lg p-4">
-                                <div className="bg-gray-100 h-40 mb-4 rounded"></div>
-                                <div className="text-sm text-gray-500 mb-1">Couple Design</div>
-                                <div className="font-medium mb-2">English Department</div>
-                                <div className="text-gray-500 mb-2">$16.48</div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-400">$6.48</span>
-                                    <span className="text-green-500">Sale</span>
-                                </div>
-                            </div>
+                        {products.slice(3, 7).map((product) => (
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
 

@@ -7,7 +7,7 @@ const TopCategories = () => {
 
   // Tüm kategorileri birleştir ve rating'e göre sırala
   const allCategories = [...(categories.kadin || []), ...(categories.erkek || [])]
-    .filter(category => category && category.name) // Geçerli kategori ve name kontrolü
+    .filter(category => category && category.title) // 'name' yerine 'title' kullanıldı
     .sort((a, b) => (b.rating || 0) - (a.rating || 0))
     .slice(0, 5);
 
@@ -20,16 +20,16 @@ const TopCategories = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {allCategories.map((category) => {
             const gender = category.gender === 'k' ? 'kadin' : 'erkek';
-            const categoryName = category.name.toLowerCase();
+            const categoryTitleLower = category.title.toLowerCase();
             return (
               <Link
                 key={category.id}
-                to={`/shop/${gender}/${categoryName}/${category.id}`}
+                to={`/shop/${gender}/${categoryTitleLower}/${category.id}`}
                 className="group"
               >
                 <div className="relative overflow-hidden rounded-lg aspect-square">
                   <img
-                    src={category.image || `https://via.placeholder.com/300x300?text=${category.title}`}
+                    src={category.img || `https://via.placeholder.com/300x300?text=${category.title}`}
                     alt={category.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />

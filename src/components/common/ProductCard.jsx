@@ -3,11 +3,16 @@ import { Link } from 'react-router-dom';
 import { Heart, ShoppingCart } from 'lucide-react';
 
 const ProductCard = ({ product }) => {
+    // Ürünün ilk resmini al, yoksa placeholder kullan
+    const imageUrl = product.images && product.images.length > 0 
+        ? product.images[0].url 
+        : 'https://via.placeholder.com/300x300';
+
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <Link to={`/product/${product.id}`} className="block relative">
                 <img
-                    src={product.image || 'https://via.placeholder.com/300x300'}
+                    src={imageUrl}
                     alt={product.name}
                     className="w-full h-64 object-cover"
                 />
