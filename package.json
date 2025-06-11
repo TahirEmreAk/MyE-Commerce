@@ -11,6 +11,7 @@
     "tw:init": "tailwindcss init -p"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.4",
     "axios": "^1.6.7",
     "crypto-js": "^4.2.0",
     "lucide-react": "^0.330.0",

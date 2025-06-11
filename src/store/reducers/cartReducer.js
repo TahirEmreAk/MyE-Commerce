@@ -1,4 +1,4 @@
-import { ADD_TO_CART, INCREASE_CART_ITEM_COUNT, DECREASE_CART_ITEM_COUNT, REMOVE_FROM_CART } from "../actions/actionTypes";
+import { ADD_TO_CART, INCREASE_CART_ITEM_COUNT, DECREASE_CART_ITEM_COUNT, REMOVE_FROM_CART, TOGGLE_CART_ITEM_CHECKED, SET_ALL_CART_ITEMS_CHECKED_BY_SELLER } from "../actions/actionTypes";
 
 const initialState = {
   cart: [],
@@ -52,6 +52,27 @@ const cartReducer = (state = initialState, action) => {
         ...state,
         cart: state.cart.filter((item) => item.product.id !== action.payload),
       };
+    case TOGGLE_CART_ITEM_CHECKED:
+      return {
+        ...state,
+        cart: state.cart.map((item) =>
+          item.product.id === action.payload
+            ? { ...item, checked: !item.checked }
+            : item
+        ),
+      };
+    case SET_ALL_CART_ITEMS_CHECKED_BY_SELLER:
+      {
+        const { sellerId, isChecked } = action.payload;
+        return {
+          ...state,
+          cart: state.cart.map((item) =>
+            item.product.store_id === sellerId // Assuming product has a store_id
+              ? { ...item, checked: isChecked }
+              : item
+          ),
+        };
+      }
     default:
       return state;
   }
