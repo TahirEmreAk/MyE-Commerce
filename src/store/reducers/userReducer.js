@@ -1,8 +1,9 @@
-import { SET_USER, CLEAR_USER } from '../types';
+import { SET_USER, CLEAR_USER, AUTH_LOADING, AUTH_LOADED } from '../types';
 
 const initialState = {
   currentUser: null,
-  isAuthenticated: false
+  isAuthenticated: false,
+  loading: true,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -11,13 +12,25 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
         currentUser: action.payload,
-        isAuthenticated: true
+        isAuthenticated: true,
+        loading: false,
       };
     case CLEAR_USER:
       return {
         ...state,
         currentUser: null,
-        isAuthenticated: false
+        isAuthenticated: false,
+        loading: false,
+      };
+    case AUTH_LOADING:
+      return {
+        ...state,
+        loading: true,
+      };
+    case AUTH_LOADED:
+      return {
+        ...state,
+        loading: false
       };
     default:
       return state;

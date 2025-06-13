@@ -12,3 +12,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </Provider>
   </React.StrictMode>
 );
+
+// Geliştirme ortamında Redux store'u global olarak erişilebilir yap
+if (process.env.NODE_ENV === 'development') {
+  window.store = store;
+}

@@ -1,11 +1,12 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { increaseCartItem, decreaseCartItem, removeFromCart, toggleCartItemChecked, setAllCartItemsCheckedBySeller, addToCart } from '../store/actions/cartActions';
 import { Checkbox } from '@headlessui/react';
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { cart } = useSelector(state => state.cart);
 
   const groupedCartItems = cart.reduce((acc, item) => {
@@ -42,21 +43,29 @@ const Cart = () => {
   let sellerQuantityDiscount = 0;
   Object.keys(groupedCartItems).forEach(storeId => {
     const seller = groupedCartItems[storeId];
-    const sellerItemCount = seller.items.reduce((acc, item) => acc + item.count, 0);
+    const sellerItemCount = seller.items.reduce((acc, item) => acc + (item.checked ? item.count : 0), 0);
     if (sellerItemCount >= 3) {
-      sellerQuantityDiscount += 40; // 3 adet ve üzeri ürün için 40 TL indirim
+      sellerQuantityDiscount += 40; // 3 adet ve üzeri seçili ürün için 40 TL indirim
     }
   });
 
   const discountAmount = (subtotal * discountPercentage) + sellerQuantityDiscount;
-  const total = subtotal - discountAmount + shippingCost;
+  const total = Math.max(0, subtotal - discountAmount + shippingCost);
 
   const handleToggleItemChecked = (productId) => {
     dispatch(toggleCartItemChecked(productId));
   };
 
   const handleToggleSellerChecked = (sellerId, isChecked) => {
-    dispatch(setAllCartItemsCheckedBySeller(sellerId, isChecked));
+    console.log(`Satıcı ${sellerId} için tüm ürünler: ${isChecked ? 'seçildi' : 'seçim kaldırıldı'}`);
+    const sellerItems = cart.filter(item => item.product.store_id === sellerId);
+    
+    // Tüm ürünlerin seçim durumunu isChecked değerine göre ayarla
+    sellerItems.forEach(item => {
+      if (item.checked !== isChecked) {
+        dispatch(toggleCartItemChecked(item.product.id));
+      }
+    });
   };
 
   const totalCartItems = cart.reduce((acc, item) => acc + item.count, 0);
@@ -124,10 +133,11 @@ const Cart = () => {
           ) : (
             Object.keys(groupedCartItems).map(storeId => {
               const seller = groupedCartItems[storeId];
-              const isAllSellerItemsChecked = seller.items.every(item => item.checked);
+              const isAnySellerItemChecked = seller.items.some(item => item.checked);
+              console.log(`Satıcı ${storeId} (${seller.name}) için isAnySellerItemChecked: ${isAnySellerItemChecked}, Mevcut ürün sayısı: ${seller.items.length}`);
               const sellerSubtotal = calculateSubtotal(seller.items);
               const sellerShippingCost = sellerSubtotal >= 500 ? 0 : 29.99; 
-              const sellerItemCount = seller.items.reduce((acc, item) => acc + item.count, 0);
+              const sellerItemCount = seller.items.reduce((acc, item) => acc + (item.checked ? item.count : 0), 0);
 
               return (
                 <div key={storeId} className="bg-white rounded-lg shadow-md p-6">
@@ -136,7 +146,7 @@ const Cart = () => {
                       <input
                         type="checkbox"
                         className="form-checkbox h-5 w-5 text-blue-600 rounded"
-                        checked={isAllSellerItemsChecked}
+                        checked={isAnySellerItemChecked}
                         onChange={(e) => handleToggleSellerChecked(storeId, e.target.checked)}
                       />
                       <h2 className="font-semibold text-lg ml-3">Satıcı: {seller.name}</h2>
@@ -206,6 +216,7 @@ const Cart = () => {
         {/* Sepet Özeti */}
         <div className="lg:col-span-1">
           <button
+            onClick={() => navigate('/order')}
             className={`w-full bg-orange-500 text-white py-3 rounded-lg mb-4 ${selectedCartItems.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-600'}`}
             disabled={selectedCartItems.length === 0}
           >
@@ -252,6 +263,7 @@ const Cart = () => {
                 </div>
               </div>
               <button 
+                onClick={() => navigate('/order')}
                 className={`w-full bg-orange-500 text-white py-2 rounded-lg ${selectedCartItems.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-600'}`}
                 disabled={selectedCartItems.length === 0}
               >
@@ -308,7 +320,7 @@ const Cart = () => {
                       <p className="text-sm text-gray-600">₺{item.price.toFixed(2)}</p>
                       <button
                         onClick={() => dispatch(addToCart(item))}
-                        className="mt-2 w-full bg-primary-600 text-white py-1 rounded hover:bg-primary-700"
+                        className="mt-2 w-full bg-orange-500 text-white py-1 rounded hover:bg-orange-600"
                       >
                         Sepete Ekle
                       </button>

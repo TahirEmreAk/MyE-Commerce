@@ -2,6 +2,9 @@
 export const SET_USER = 'SET_USER';
 export const CLEAR_USER = 'CLEAR_USER';
 
+export const AUTH_LOADING = 'AUTH_LOADING';
+export const AUTH_LOADED = 'AUTH_LOADED';
+
 // Category Action Types
 export const FETCH_CATEGORIES_START = 'FETCH_CATEGORIES_START';
 export const FETCH_CATEGORIES_SUCCESS = 'FETCH_CATEGORIES_SUCCESS';

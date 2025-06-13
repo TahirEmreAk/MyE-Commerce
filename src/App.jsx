@@ -18,14 +18,22 @@ import ShoppingPage from './pages/ShoppingPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { verifyToken } from './store/actions/userActions';
+import { setAuthToken } from './utils/authUtils';
 import { Provider } from 'react-redux';
 import store from './store';
+import CreateOrderPage from './pages/CreateOrderPage';
 
 export default function App() {
   const dispatch = useDispatch();
 
+  // Uygulama yüklendiğinde token'ı kontrol et ve Axios header'ına ekle
+  const token = localStorage.getItem('token');
+  if (token) {
+    setAuthToken(token);
+  }
+
   useEffect(() => {
-    // Uygulama başlangıcında token kontrolü
+    // Uygulama başlangıcında token kontrolü (Redux state'ini güncellemek için)
     dispatch(verifyToken());
   }, [dispatch]);
 
@@ -47,6 +55,7 @@ export default function App() {
               <Route path="/about" element={<AboutUs />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/order" element={<CreateOrderPage />} />
             </Routes>
           </PageContent>
           <Footer />
