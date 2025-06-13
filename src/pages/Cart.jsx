@@ -27,8 +27,8 @@ const Cart = () => {
   const subtotal = calculateSubtotal(selectedCartItems);
   
   let shippingCost = 29.99; // Varsayılan kargo ücreti
-  if (subtotal >= 500) {
-    shippingCost = 0; // 500 TL üzeri siparişlerde kargo bedava
+  if (selectedCartItems.length === 0 || subtotal >= 500) {
+    shippingCost = 0; // Sepet boşsa veya 500 TL üzeri siparişlerde kargo bedava
   }
 
   let discountPercentage = 0;

@@ -9,6 +9,7 @@ import shoppingCartReducer from './reducers/shoppingCartReducer';
 import clientReducer from './reducers/clientReducer';
 import cartReducer from './reducers/cartReducer';
 import addressReducer from './reducers/addressReducer';
+import cardReducer from './reducers/cardReducer';
 
 const rootReducer = combineReducers({
   product: productReducer,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   client: clientReducer,
   cart: cartReducer,
   address: addressReducer,
+  card: cardReducer,
 });
 
 const middleware = [thunk];
