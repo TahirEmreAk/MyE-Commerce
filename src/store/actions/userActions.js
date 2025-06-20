@@ -15,18 +15,12 @@ export const clearUser = () => ({
 // Thunk Actions
 export const loginUser = (credentials) => async (dispatch) => {
   try {
-    console.log('Login attempt with:', { email: credentials.email });
+    dispatch({ type: AUTH_LOADING }); // Yükleme başladı
     
     const response = await axiosInstance.post('/login', {
       email: credentials.email,
       password: credentials.password
     });
-
-    console.log('Login response:', response.data);
-
-    if (!response.data || !response.data.token) {
-      throw new Error('Geçersiz sunucu yanıtı');
-    }
 
     const userData = {
       ...response.data.user,
@@ -45,31 +39,12 @@ export const loginUser = (credentials) => async (dispatch) => {
 
     // Store'a kullanıcı bilgilerini kaydet
     dispatch(setUser(userData));
+    dispatch({ type: AUTH_LOADED }); // Yükleme bitti
 
     return response.data;
   } catch (error) {
-    console.error('Login error details:', {
-      message: error.message,
-      code: error.code,
-      response: error.response?.data,
-      status: error.response?.status
-    });
-
-    if (error.code === 'ECONNABORTED') {
-      throw new Error('Sunucu yanıt vermiyor. Lütfen daha sonra tekrar deneyin.');
-    }
-
-    if (error.response) {
-      // Sunucudan gelen hata
-      const errorMessage = error.response.data?.message || 'Giriş yapılırken bir hata oluştu';
-      throw new Error(errorMessage);
-    } else if (error.request) {
-      // İstek yapıldı ama yanıt alınamadı
-      throw new Error('Sunucuya ulaşılamıyor. Lütfen internet bağlantınızı kontrol edin.');
-    } else {
-      // İstek oluşturulurken hata oluştu
-      throw new Error('Giriş yapılırken bir hata oluştu: ' + error.message);
-    }
+    dispatch({ type: AUTH_LOADED }); // Hata durumunda da yükleme bitti
+    throw error;
   }
 };
 

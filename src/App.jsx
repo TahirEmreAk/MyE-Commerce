@@ -1,6 +1,6 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Header from './layout/Header';
 import Footer from './layout/Footer';
 import PageContent from './layout/PageContent';
@@ -22,8 +22,9 @@ import { setAuthToken } from './utils/authUtils';
 import { Provider } from 'react-redux';
 import store from './store';
 import CreateOrderPage from './pages/CreateOrderPage';
+import PreviousOrders from './pages/PreviousOrders';
 
-export default function App() {
+function AppContent() {
   const dispatch = useDispatch();
 
   // Uygulama yüklendiğinde token'ı kontrol et ve Axios header'ına ekle
@@ -38,29 +39,48 @@ export default function App() {
   }, [dispatch]);
 
   return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <PageContent>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/products" element={<ProductList />} />
+          <Route path="/shop/:gender/:categoryName/:categoryId/:productNameSlug/:productId" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/shop" element={<ShopPage />} />
+          <Route path="/shop/:gender/:categoryName/:categoryId" element={<ShoppingPage />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/order" element={<CreateOrderPage />} />
+          <Route path="/previous-orders" element={
+            <ProtectedRoute>
+              <PreviousOrders />
+            </ProtectedRoute>
+          } />
+        </Routes>
+      </PageContent>
+      <Footer />
+      <ToastContainer position="top-right" autoClose={3000} />
+    </div>
+  );
+}
+
+function ProtectedRoute({ children }) {
+  const isAuthenticated = useSelector(state => state.user.isAuthenticated);
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
+
+export default function App() {
+  return (
     <Provider store={store}>
       <BrowserRouter>
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <PageContent>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/products" element={<ProductList />} />
-              <Route path="/shop/:gender/:categoryName/:categoryId/:productNameSlug/:productId" element={<ProductDetail />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/shop" element={<ShopPage />} />
-              <Route path="/shop/:gender/:categoryName/:categoryId" element={<ShoppingPage />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/team" element={<Team />} />
-              <Route path="/about" element={<AboutUs />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/order" element={<CreateOrderPage />} />
-            </Routes>
-          </PageContent>
-          <Footer />
-        </div>
-        <ToastContainer position="top-right" autoClose={3000} />
+        <AppContent />
       </BrowserRouter>
     </Provider>
   );

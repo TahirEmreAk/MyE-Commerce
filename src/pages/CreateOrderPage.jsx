@@ -5,6 +5,8 @@ import { fetchAddresses, addAddress, updateAddress, deleteAddress, setSelectedAd
 import { fetchCards, addCard, updateCard, deleteCard, setSelectedCard } from '../store/actions/cardActions';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import axiosInstance from '../api/axiosInstance';
+import { setCart } from '../store/actions/cartActions';
 
 const turkishCities = [
   "ADANA", "ADIYAMAN", "AFYONKARAHİSAR", "AĞRI", "AMASYA", "ANKARA", "ANTALYA", "ARTVİN", "AYDIN", "BALIKESİR",
@@ -19,13 +21,6 @@ const turkishCities = [
 ];
 
 // Banka logoları ve Mastercard sembolü
-// const bankLogos = [
-//   { id: 1, name: 'Bonus', logo: '🏦' },
-//   { id: 2, name: 'Vakıfbank', logo: '🏛️' },
-//   { id: 3, name: 'Ziraat Bankası', logo: '🏢' },
-//   { id: 4, name: 'İş Bankası', logo: '🏪' },
-// ];
-
 const mastercardLogo = '💳';
 
 const CreateOrderPage = () => {
@@ -102,17 +97,17 @@ const CreateOrderPage = () => {
     }
   }, [isAuthenticated, authLoading, navigate, dispatch]);
 
-  // Varsayılan adres ve kart seçimi için yeni useEffect
   useEffect(() => {
-    if (addresses.length > 0 && !selectedAddress) {
-      // İlk adresi varsayılan olarak seç
+    if (!loading && addresses.length > 0 && !selectedAddress) {
       dispatch(setSelectedAddress(addresses[0]));
     }
-    if (cards.length > 0 && !selectedCard) {
-      // İlk kartı varsayılan olarak seç
+  }, [addresses, loading, selectedAddress, dispatch]);
+
+  useEffect(() => {
+    if (!cardsLoading && cards.length > 0 && !selectedCard) {
       dispatch(setSelectedCard(cards[0]));
     }
-  }, [addresses, cards, selectedAddress, selectedCard, dispatch]);
+  }, [cards, cardsLoading, selectedCard, dispatch]);
 
   useEffect(() => {
     // selectedInstallment veya total değiştiğinde displayTotal'ı güncelle
@@ -120,7 +115,7 @@ const CreateOrderPage = () => {
     if (selectedOption) {
       setDisplayTotal(selectedOption.totalAmount);
     }
-  }, [selectedInstallment, total]);
+  }, [selectedInstallment, total]); // total'ı da bağımlılıklara ekledik
 
   const handleAddAddressClick = () => {
     setShowAddressForm(true);
@@ -221,7 +216,6 @@ const CreateOrderPage = () => {
       expire_month: parseInt(data.expire_month, 10),
       expire_year: parseInt(data.expire_year, 10),
       name_on_card: data.name_on_card,
-      // bank_logo: bankLogos[cards.length % bankLogos.length].logo, // Backend'e gönderilmemeli
     };
 
     if (isEditingCard) {
@@ -265,6 +259,33 @@ const CreateOrderPage = () => {
     { label: '9 Taksit', value: '9 Taksit', totalAmount: calculateInstallmentAmount(9, total), interestRate: 0.09 },
     { label: '12 Taksit', value: '12 Taksit', totalAmount: calculateInstallmentAmount(12, total), interestRate: 0.12 },
   ];
+
+  const handleOrder = async () => {
+    if (!selectedAddress || !selectedCard || !agreedToTerms || selectedCartItems.length === 0) return;
+    try {
+      const payload = {
+        address_id: selectedAddress.id,
+        order_date: new Date().toISOString(),
+        card_no: selectedCard.card_no,
+        card_name: selectedCard.name_on_card,
+        card_expire_month: selectedCard.expire_month,
+        card_expire_year: selectedCard.expire_year,
+        card_ccv: selectedCard.ccv || '000', // Eğer ccv yoksa dummy değer
+        price: displayTotal,
+        products: selectedCartItems.map(item => ({
+          product_id: item.product.id,
+          count: item.count,
+          detail: item.detail || ''
+        }))
+      };
+      await axiosInstance.post('/order', payload);
+      toast.success('Siparişiniz başarıyla oluşturuldu!');
+      dispatch(setCart([])); // Sepeti sıfırla
+      navigate('/previous-orders');
+    } catch (err) {
+      toast.error('Sipariş oluşturulurken hata oluştu.');
+    }
+  };
 
   if (authLoading) {
     return <p>Yükleniyor...</p>; // Kimlik doğrulama yüklenirken gösterilecek
@@ -362,10 +383,7 @@ const CreateOrderPage = () => {
                         onChange={() => dispatch(setSelectedAddress(address))}
                         className="mr-2"
                       />
-                      <label htmlFor={`address-${address.id}`} className="font-semibold">
-                        {address.title}
-                        {selectedAddress?.id === address.id && <span className="ml-2 text-sm text-green-600">(Varsayılan)</span>}
-                      </label>
+                      <label htmlFor={`address-${address.id}`} className="font-semibold">{address.title}</label>
                       <p className="text-gray-600">{address.name} {address.surname}, {address.phone}</p>
                       <p className="text-gray-600">{address.neighborhood} {address.district}/{address.city}</p>
                     </div>
@@ -524,7 +542,6 @@ const CreateOrderPage = () => {
                               <span className="text-2xl">{mastercardLogo}</span>
                               <label htmlFor={`card-${card.id}`} className="font-semibold">
                                 {card.card_no.slice(0, 4)} {card.card_no.slice(4, 6)}** **** {card.card_no.slice(-4)} ({card.expire_month}/{card.expire_year})
-                                {selectedCard?.id === card.id && <span className="ml-2 text-sm text-green-600">(Varsayılan)</span>}
                               </label>
                             </div>
                           </div>
@@ -597,10 +614,7 @@ const CreateOrderPage = () => {
           <button
             disabled={!selectedAddress || !selectedCard || !agreedToTerms || selectedCartItems.length === 0}
             className={`w-full bg-orange-500 text-white py-3 rounded-lg mb-4 ${(!selectedAddress || !selectedCard || !agreedToTerms || selectedCartItems.length === 0) ? 'bg-gray-400 cursor-not-allowed' : 'hover:bg-orange-600'}`}
-            onClick={() => {
-              // Ödeme işlemi burada yapılacak
-              console.log('Ödeme yapılıyor...');
-            }}
+            onClick={handleOrder}
           >
             Ödeme Yap
           </button>
@@ -656,10 +670,7 @@ const CreateOrderPage = () => {
             <button
               disabled={!selectedAddress || !selectedCard || !agreedToTerms || selectedCartItems.length === 0}
               className={`w-full mt-4 py-3 rounded-lg text-white font-semibold ${(!selectedAddress || !selectedCard || !agreedToTerms || selectedCartItems.length === 0) ? 'bg-gray-400 cursor-not-allowed' : 'bg-orange-500 hover:bg-orange-600'}`}
-              onClick={() => {
-                // Ödeme işlemi burada yapılacak
-                console.log('Ödeme yapılıyor...');
-              }}
+              onClick={handleOrder}
             >
               Ödeme Yap
             </button>

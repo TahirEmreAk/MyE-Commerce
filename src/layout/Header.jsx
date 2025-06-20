@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Menu, ShoppingCart, Search, User, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, Instagram, Youtube, Facebook, Twitter } from 'lucide-react';
@@ -14,10 +14,28 @@ const Header = () => {
     const { cart } = useSelector(state => state.cart);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
+    const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+    const userDropdownRef = useRef(null);
 
     useEffect(() => {
         dispatch(fetchCategories());
     }, [dispatch]);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
+                setUserDropdownOpen(false);
+            }
+        }
+        if (userDropdownOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [userDropdownOpen]);
 
     const handleLogout = () => {
         dispatch(logoutUser());
@@ -96,21 +114,26 @@ const Header = () => {
                     <div className="flex items-center space-x-4 mt-4 md:mt-0">
                         {isAuthenticated ? (
                             <>
-                                <div className="flex items-center space-x-2">
+                                <div className="relative flex items-center space-x-2" ref={userDropdownRef}>
                                     <img
                                         src={currentUser.gravatarUrl}
                                         alt={currentUser.name}
-                                        className="w-8 h-8 rounded-full"
+                                        className="w-8 h-8 rounded-full cursor-pointer"
+                                        onClick={() => setUserDropdownOpen((open) => !open)}
                                     />
-                                    <span className="text-[#252B42]">{currentUser.name}</span>
+                                    <span className="text-[#252B42] cursor-pointer" onClick={() => setUserDropdownOpen((open) => !open)}>{currentUser.name}</span>
+                                    {userDropdownOpen && (
+                                        <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-md shadow-lg z-50 min-w-[180px]">
+                                            <Link to="/previous-orders" className="block px-4 py-2 text-[#252B42] hover:bg-gray-100" onClick={() => setUserDropdownOpen(false)}>Önceki Siparişlerim</Link>
+                                            <button
+                                                onClick={() => { setUserDropdownOpen(false); handleLogout(); }}
+                                                className="w-full text-left px-4 py-2 text-[#23A6F0] hover:bg-gray-100 flex items-center"
+                                            >
+                                                <LogOut size={20} className="mr-1" />Çıkış
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
-                                <button
-                                    onClick={handleLogout}
-                                    className="text-[#23A6F0] hover:text-[#2A7CC7] flex items-center"
-                                >
-                                    <LogOut size={20} className="mr-1" />
-                                    Çıkış
-                                </button>
                             </>
                         ) : (
                             <>
