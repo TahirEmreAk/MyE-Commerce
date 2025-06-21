@@ -1,4 +1,4 @@
-import { ADD_TO_CART, INCREASE_CART_ITEM_COUNT, DECREASE_CART_ITEM_COUNT, REMOVE_FROM_CART, TOGGLE_CART_ITEM_CHECKED, SET_ALL_CART_ITEMS_CHECKED_BY_SELLER } from "../actions/actionTypes";
+import { ADD_TO_CART, INCREASE_CART_ITEM_COUNT, DECREASE_CART_ITEM_COUNT, REMOVE_FROM_CART, TOGGLE_CART_ITEM_CHECKED, SET_ALL_CART_ITEMS_CHECKED_BY_SELLER, SET_CART } from "../actions/actionTypes";
 
 const initialState = {
   cart: [],
@@ -73,6 +73,11 @@ const cartReducer = (state = initialState, action) => {
           ),
         };
       }
+    case SET_CART:
+      return {
+        ...state,
+        cart: action.payload,
+      };
     default:
       return state;
   }

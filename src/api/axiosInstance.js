@@ -15,7 +15,7 @@ axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = token;
     }
     return config;
   },
@@ -34,6 +34,9 @@ axiosInstance.interceptors.response.use(
       console.error('Request timeout - Sunucu yanıt vermiyor');
     }
     if (error.response?.status === 401) {
+      console.error('401 Unauthorized - Token geçersiz veya eksik');
+      console.error('Response data:', error.response.data);
+      console.error('Current token:', localStorage.getItem('token'));
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';

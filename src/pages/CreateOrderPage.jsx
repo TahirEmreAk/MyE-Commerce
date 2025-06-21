@@ -258,6 +258,11 @@ const CreateOrderPage = () => {
 
   const handleOrder = async () => {
     if (!selectedAddress || !selectedCard || !agreedToTerms || selectedCartItems.length === 0) return;
+    
+    console.log('handleOrder çağrıldı');
+    console.log('Token:', localStorage.getItem('token'));
+    console.log('User:', localStorage.getItem('user'));
+    
     try {
       const payload = {
         address_id: selectedAddress.id,
@@ -274,11 +279,24 @@ const CreateOrderPage = () => {
           detail: item.detail || ''
         }))
       };
-      await axiosInstance.post('/order', payload);
+      
+      console.log('Gönderilecek payload:', payload);
+      console.log('Authorization header:', axiosInstance.defaults.headers.common['Authorization']);
+      
+      const response = await axiosInstance.post('/order', payload);
+      console.log('Başarılı yanıt:', response.data);
+      
       toast.success('Siparişiniz başarıyla oluşturuldu!');
-      dispatch(setCart([])); // Sepeti sıfırla
+      
+      // Sadece satın alınan ürünleri sepetten çıkar
+      const remainingCartItems = cart.filter(item => !item.checked);
+      dispatch(setCart(remainingCartItems));
+      console.log('Sepet temizlendi, kalan ürünler:', remainingCartItems);
+      
       navigate('/previous-orders');
     } catch (err) {
+      console.error('Sipariş hatası:', err);
+      console.error('Hata detayları:', err.response?.data);
       toast.error('Sipariş oluşturulurken hata oluştu.');
     }
   };

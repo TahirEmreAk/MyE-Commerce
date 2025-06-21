@@ -3,14 +3,20 @@ import { SET_USER, CLEAR_USER, AUTH_LOADING, AUTH_LOADED } from '../types';
 import { setAuthToken, clearStoredAuth } from '../../utils/authUtils';
 
 // Action Creators
-export const setUser = (user) => ({
-  type: SET_USER,
-  payload: user
-});
+export const setUser = (user) => {
+  console.log('setUser action creator - user:', user); // Debug için
+  return {
+    type: SET_USER,
+    payload: user
+  };
+};
 
-export const clearUser = () => ({
-  type: CLEAR_USER
-});
+export const clearUser = () => {
+  console.log('clearUser action creator'); // Debug için
+  return {
+    type: CLEAR_USER
+  };
+};
 
 // Thunk Actions
 export const loginUser = (credentials) => async (dispatch) => {
@@ -22,11 +28,14 @@ export const loginUser = (credentials) => async (dispatch) => {
       password: credentials.password
     });
 
+    console.log('Login response:', response.data); // Debug için
+
     const userData = {
       ...response.data.user,
-      token: response.data.token,
-      gravatarUrl: credentials.gravatarUrl
+      token: response.data.token
     };
+
+    console.log('User data to be stored:', userData); // Debug için
 
     // Token'ı localStorage'a kaydet (eğer beni hatırla seçiliyse)
     if (credentials.rememberMe) {
@@ -43,6 +52,7 @@ export const loginUser = (credentials) => async (dispatch) => {
 
     return response.data;
   } catch (error) {
+    console.error('Login error:', error); // Debug için
     dispatch({ type: AUTH_LOADED }); // Hata durumunda da yükleme bitti
     throw error;
   }
@@ -53,7 +63,10 @@ export const verifyToken = () => async (dispatch) => {
   try {
     const token = localStorage.getItem('token');
     
+    console.log('verifyToken - token:', token); // Debug için
+    
     if (!token) {
+      console.log('verifyToken - no token found'); // Debug için
       dispatch({ type: AUTH_LOADED }); // Yükleme bitti
       return false;
     }
@@ -64,11 +77,15 @@ export const verifyToken = () => async (dispatch) => {
     // Token'ı doğrula
     const response = await axiosInstance.get('/verify');
     
+    console.log('verifyToken - response:', response.data); // Debug için
+    
     // Kullanıcı bilgilerini güncelle
     const userData = {
       ...response.data,
       token
     };
+
+    console.log('verifyToken - userData:', userData); // Debug için
 
     // LocalStorage'ı güncelle
     localStorage.setItem('user', JSON.stringify(userData));
@@ -79,6 +96,7 @@ export const verifyToken = () => async (dispatch) => {
     
     return true;
   } catch (error) {
+    console.error('verifyToken - error:', error); // Debug için
     // Token geçersiz ise temizle
     clearStoredAuth();
     dispatch(clearUser());
@@ -88,6 +106,7 @@ export const verifyToken = () => async (dispatch) => {
 };
 
 export const logoutUser = () => (dispatch) => {
+  console.log('logoutUser - çıkış yapılıyor'); // Debug için
   clearStoredAuth();
   dispatch(clearUser());
 }; 

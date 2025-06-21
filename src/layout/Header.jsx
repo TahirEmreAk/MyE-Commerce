@@ -3,19 +3,48 @@ import { Menu, ShoppingCart, Search, User, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, Instagram, Youtube, Facebook, Twitter } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
-import { logoutUser } from '../store/actions/userActions';
+import { logoutUser, setUser } from '../store/actions/userActions';
 import { fetchCategories } from '../store/actions/categoryActions';
 import CategoryMenu from '../components/CategoryMenu';
 
 const Header = () => {
     const dispatch = useDispatch();
-    const { currentUser, isAuthenticated } = useSelector(state => state.user);
+    const { currentUser, isAuthenticated, loading } = useSelector(state => state.user);
     const { categories } = useSelector(state => state.categories);
     const { cart } = useSelector(state => state.cart);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
     const [userDropdownOpen, setUserDropdownOpen] = useState(false);
     const userDropdownRef = useRef(null);
+
+    // Debug için kullanıcı bilgilerini logla
+    useEffect(() => {
+        console.log('Header - currentUser:', currentUser);
+        console.log('Header - isAuthenticated:', isAuthenticated);
+        console.log('Header - loading:', loading);
+        
+        // Kullanıcı değiştiğinde dropdown'ı kapat
+        if (!isAuthenticated || !currentUser) {
+            setUserDropdownOpen(false);
+        }
+        
+        // Eğer authenticated ama currentUser yoksa, localStorage'dan almaya çalış
+        if (isAuthenticated && !currentUser && !loading) {
+            console.log('Header - currentUser eksik, localStorage kontrol ediliyor');
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                try {
+                    const parsedUser = JSON.parse(storedUser);
+                    console.log('Header - localStorage user:', parsedUser);
+                    if (parsedUser && parsedUser.name && parsedUser.email) {
+                        dispatch(setUser(parsedUser));
+                    }
+                } catch (error) {
+                    console.error('Header - localStorage user parse error:', error);
+                }
+            }
+        }
+    }, [currentUser, isAuthenticated, loading, dispatch]);
 
     useEffect(() => {
         dispatch(fetchCategories());
@@ -38,7 +67,47 @@ const Header = () => {
     }, [userDropdownOpen]);
 
     const handleLogout = () => {
+        console.log('Logout çağrıldı');
         dispatch(logoutUser());
+    };
+
+    // Avatar renklerini kullanıcı adına göre belirle
+    const getAvatarColors = (name) => {
+        const colors = [
+            'from-blue-400 to-purple-500',
+            'from-green-400 to-blue-500',
+            'from-purple-400 to-pink-500',
+            'from-orange-400 to-red-500',
+            'from-teal-400 to-green-500',
+            'from-indigo-400 to-purple-500',
+            'from-pink-400 to-red-500',
+            'from-yellow-400 to-orange-500'
+        ];
+        
+        if (!name || typeof name !== 'string') return colors[0];
+        
+        // Kullanıcı adının karakterlerinin toplamını al ve renk seç
+        const charSum = name.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+        const colorIndex = charSum % colors.length;
+        return colors[colorIndex];
+    };
+
+    // Kullanıcı adının ilk harfini güvenli şekilde al
+    const getUserInitial = (user) => {
+        if (!user || !user.name || typeof user.name !== 'string') return 'U';
+        return user.name.charAt(0).toUpperCase();
+    };
+
+    // Kullanıcı adını güvenli şekilde al
+    const getUserName = (user) => {
+        if (!user || !user.name || typeof user.name !== 'string') return 'Kullanıcı';
+        return user.name;
+    };
+
+    // Kullanıcı email'ini güvenli şekilde al
+    const getUserEmail = (user) => {
+        if (!user || !user.email || typeof user.email !== 'string') return 'email@example.com';
+        return user.email;
     };
 
     const totalCartItems = cart.reduce((acc, item) => acc + item.count, 0);
@@ -112,37 +181,105 @@ const Header = () => {
                     </nav>
 
                     <div className="flex items-center space-x-4 mt-4 md:mt-0">
-                        {isAuthenticated ? (
+                        {isAuthenticated && currentUser && currentUser.name && currentUser.email ? (
                             <>
                                 <div className="relative flex items-center space-x-2" ref={userDropdownRef}>
-                                    <img
-                                        src={currentUser.gravatarUrl}
-                                        alt={currentUser.name}
-                                        className="w-8 h-8 rounded-full cursor-pointer"
+                                    <div 
+                                        className={`w-10 h-10 rounded-full cursor-pointer flex items-center justify-center text-white font-bold text-lg shadow-md hover:shadow-lg transition-shadow bg-gradient-to-br ${getAvatarColors(getUserName(currentUser))}`}
                                         onClick={() => setUserDropdownOpen((open) => !open)}
-                                    />
-                                    <span className="text-[#252B42] cursor-pointer" onClick={() => setUserDropdownOpen((open) => !open)}>{currentUser.name}</span>
+                                    >
+                                        {getUserInitial(currentUser)}
+                                    </div>
+                                    <span className="text-[#252B42] cursor-pointer font-medium" onClick={() => setUserDropdownOpen((open) => !open)}>{getUserName(currentUser)}</span>
                                     {userDropdownOpen && (
-                                        <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-md shadow-lg z-50 min-w-[180px]">
-                                            <Link to="/previous-orders" className="block px-4 py-2 text-[#252B42] hover:bg-gray-100" onClick={() => setUserDropdownOpen(false)}>Önceki Siparişlerim</Link>
-                                            <button
-                                                onClick={() => { setUserDropdownOpen(false); handleLogout(); }}
-                                                className="w-full text-left px-4 py-2 text-[#23A6F0] hover:bg-gray-100 flex items-center"
-                                            >
-                                                <LogOut size={20} className="mr-1" />Çıkış
-                                            </button>
+                                        <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-xl z-50 min-w-[220px] overflow-hidden">
+                                            {/* Profil Bilgileri */}
+                                            <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                                                <div className="flex items-center space-x-3">
+                                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md bg-gradient-to-br ${getAvatarColors(getUserName(currentUser))}`}>
+                                                        {getUserInitial(currentUser)}
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-semibold text-gray-800">{getUserName(currentUser)}</div>
+                                                        <div className="text-sm text-gray-500">{getUserEmail(currentUser)}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            {/* Menü Öğeleri */}
+                                            <div className="py-2">
+                                                <Link 
+                                                    to="/previous-orders" 
+                                                    className="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors" 
+                                                    onClick={() => setUserDropdownOpen(false)}
+                                                >
+                                                    <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    </svg>
+                                                    Önceki Siparişlerim
+                                                </Link>
+                                                <button
+                                                    onClick={() => { setUserDropdownOpen(false); handleLogout(); }}
+                                                    className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                                                >
+                                                    <LogOut size={20} className="mr-3" />
+                                                    Çıkış Yap
+                                                </button>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
                             </>
                         ) : (
                             <>
-                                <Link to="/login" className="text-[#23A6F0] hover:text-[#2A7CC7]">
-                                    Giriş Yap
-                                </Link>
-                                <Link to="/signup" className="text-[#23A6F0] hover:text-[#2A7CC7]">
-                                    Kayıt Ol
-                                </Link>
+                                {loading ? (
+                                    <div className="flex items-center space-x-2">
+                                        <div className="w-6 h-6 border-2 border-[#23A6F0] border-t-transparent rounded-full animate-spin"></div>
+                                        <span className="text-[#252B42] text-sm">Yükleniyor...</span>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {isAuthenticated && (
+                                            <>
+                                                <div className="relative flex items-center space-x-2" ref={userDropdownRef}>
+                                                    <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold text-sm cursor-pointer hover:bg-gray-400 transition-colors" onClick={() => setUserDropdownOpen((open) => !open)}>
+                                                        U
+                                                    </div>
+                                                    <span className="text-[#252B42] cursor-pointer font-medium" onClick={() => setUserDropdownOpen((open) => !open)}>Kullanıcı</span>
+                                                    {userDropdownOpen && (
+                                                        <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-xl z-50 min-w-[200px] overflow-hidden">
+                                                            <div className="py-2">
+                                                                <button
+                                                                    onClick={() => { setUserDropdownOpen(false); handleLogout(); }}
+                                                                    className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                                                                >
+                                                                    <LogOut size={20} className="mr-3" />
+                                                                    Çıkış Yap
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                {/* Debug bilgisi */}
+                                                {process.env.NODE_ENV === 'development' && (
+                                                    <div className="text-xs text-gray-500 ml-2">
+                                                        Debug: {currentUser ? `User: ${currentUser.name || 'No name'}, ${currentUser.email || 'No email'}` : 'No user data'}
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+                                        {!isAuthenticated && (
+                                            <>
+                                                <Link to="/login" className="text-[#252B42] hover:text-[#23A6F0] transition-colors font-medium">
+                                                    Giriş Yap
+                                                </Link>
+                                                <Link to="/signup" className="bg-[#23A6F0] text-white px-4 py-2 rounded hover:bg-[#2A7CC7] transition-colors font-medium">
+                                                    Kayıt Ol
+                                                </Link>
+                                            </>
+                                        )}
+                                    </>
+                                )}
                             </>
                         )}
                         <div 

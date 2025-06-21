@@ -73,15 +73,20 @@ function AppContent() {
 }
 
 function ProtectedRoute({ children }) {
-  const { isAuthenticated, loading } = useSelector(state => state.user);
+  const { isAuthenticated, currentUser, loading } = useSelector(state => state.user);
+  
+  // Debug için log
+  console.log('ProtectedRoute - isAuthenticated:', isAuthenticated);
+  console.log('ProtectedRoute - currentUser:', currentUser);
+  console.log('ProtectedRoute - loading:', loading);
   
   // Eğer authentication yükleniyorsa, yüklenme tamamlanana kadar bekle
   if (loading) {
     return <div className="flex justify-center items-center min-h-screen">Yükleniyor...</div>;
   }
   
-  // Authentication yüklendi ama kullanıcı giriş yapmamışsa login'e yönlendir
-  if (!isAuthenticated) {
+  // Authentication yüklendi ama kullanıcı giriş yapmamışsa veya kullanıcı bilgileri yoksa login'e yönlendir
+  if (!isAuthenticated || !currentUser) {
     return <Navigate to="/login" replace />;
   }
   

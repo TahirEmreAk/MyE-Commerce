@@ -14,9 +14,14 @@ export const fetchOrdersFailure = (error) => ({ type: FETCH_ORDERS_FAILURE, payl
 export const fetchOrders = () => async (dispatch) => {
   dispatch(fetchOrdersStart());
   try {
+    console.log('Siparişler getiriliyor...');
     const response = await axiosInstance.get('/order');
+    console.log('Siparişler başarıyla getirildi:', response.data);
     dispatch(fetchOrdersSuccess(response.data));
   } catch (error) {
-    dispatch(fetchOrdersFailure(error.message));
+    console.error('Siparişler getirilirken hata:', error);
+    console.error('Hata detayları:', error.response?.data);
+    const errorMessage = error.response?.data?.message || error.message || 'Siparişler yüklenirken hata oluştu';
+    dispatch(fetchOrdersFailure(errorMessage));
   }
 }; 

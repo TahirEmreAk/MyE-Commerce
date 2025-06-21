@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Loader2 } from 'lucide-react';
-import CryptoJS from 'crypto-js';
 import { toast } from 'react-toastify';
 import { loginUser } from '../store/actions/userActions';
 
@@ -24,12 +23,8 @@ const Login = () => {
     try {
       const { rememberMe, ...loginData } = data;
       
-      // Gravatar için email hash'i oluştur
-      const emailHash = CryptoJS.MD5(loginData.email.toLowerCase().trim()).toString();
-      const gravatarUrl = `https://www.gravatar.com/avatar/${emailHash}?d=mp`;
-      
       // Login işlemini gerçekleştir
-      await dispatch(loginUser({ ...loginData, gravatarUrl, rememberMe }));
+      await dispatch(loginUser({ ...loginData, rememberMe }));
       
       // Başarılı login sonrası yönlendirme
       const from = location.state?.from?.pathname || '/';
