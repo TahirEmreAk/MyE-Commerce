@@ -26,7 +26,6 @@ const mastercardLogo = '💳';
 const CreateOrderPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isAuthenticated, loading: authLoading } = useSelector(state => state.user);
   const { addresses, loading, error, selectedAddress } = useSelector(state => state.address);
   const { cards, loading: cardsLoading, error: cardsError, selectedCard } = useSelector(state => state.card);
   const { cart } = useSelector(state => state.cart); // Sepet state'ini dahil et
@@ -89,13 +88,10 @@ const CreateOrderPage = () => {
   const { register: registerCard, handleSubmit: handleSubmitCard, reset: resetCard, setValue: setCardValue, formState: { errors: cardErrors } } = useForm();
 
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      navigate('/login');
-    } else if (isAuthenticated) {
-      dispatch(fetchAddresses());
-      dispatch(fetchCards());
-    }
-  }, [isAuthenticated, authLoading, navigate, dispatch]);
+    // Burada sadece adres ve kart bilgilerini yükle
+    dispatch(fetchAddresses());
+    dispatch(fetchCards());
+  }, [dispatch]);
 
   useEffect(() => {
     if (!loading && addresses.length > 0 && !selectedAddress) {
@@ -287,14 +283,7 @@ const CreateOrderPage = () => {
     }
   };
 
-  if (authLoading) {
-    return <p>Yükleniyor...</p>; // Kimlik doğrulama yüklenirken gösterilecek
-  }
-
-  if (!isAuthenticated) {
-    return null;
-  }
-
+  // Authentication kontrolü ProtectedRoute tarafından yapılıyor, burada gerekli değil
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Sipariş Oluştur</h1>

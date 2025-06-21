@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const SignUp = () => {
   const [roles, setRoles] = useState([]);
@@ -26,7 +27,13 @@ const SignUp = () => {
         const response = await axiosInstance.get('/roles');
         setRoles(response.data);
       } catch (error) {
-        setError('Roller yüklenirken bir hata oluştu.');
+        console.error('Roller yüklenirken hata:', error);
+        // Varsayılan roller ekle
+        setRoles([
+          { id: 1, name: 'Müşteri' },
+          { id: 2, name: 'Mağaza' }
+        ]);
+        toast.warning('Roller yüklenirken bir hata oluştu. Varsayılan roller kullanılıyor.');
       }
     };
 
@@ -38,30 +45,60 @@ const SignUp = () => {
     setError('');
 
     try {
+      // Form verilerini temizle ve düzenle
+      const cleanData = {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        role_id: parseInt(data.role_id, 10) // String'i number'a çevir
+      };
+
       // Eğer mağaza seçiliyse, store verilerini ekle
       if (data.role_id === '2') { // Mağaza role_id'si
-        data = {
-          ...data,
-          store: {
-            name: data.store_name,
-            phone: data.store_phone,
-            tax_no: data.store_tax_no,
-            bank_account: data.store_bank_account
-          }
+        cleanData.store = {
+          name: data.store_name,
+          phone: data.store_phone,
+          tax_no: data.store_tax_no,
+          bank_account: data.store_bank_account
         };
-        // Form datasından store_ ile başlayan alanları temizle
-        delete data.store_name;
-        delete data.store_phone;
-        delete data.store_tax_no;
-        delete data.store_bank_account;
       }
 
-      await axiosInstance.post('/signup', data);
+      console.log('Gönderilecek veri:', cleanData); // Debug için
+
+      const response = await axiosInstance.post('/signup', cleanData);
+      console.log('Başarılı yanıt:', response.data); // Debug için
+      
+      toast.success('Kayıt başarılı! Hesabınızı aktifleştirmek için e-posta adresinize gönderilen linke tıklayın.');
       navigate(-1); // Önceki sayfaya dön
-      // Kullanıcıya bilgi ver (bu kısmı uygulama durumuna göre ayarlayabilirsiniz)
-      alert('Hesabınızı aktifleştirmek için e-posta adresinize gönderilen linke tıklayın!');
     } catch (error) {
-      setError(error.response?.data?.message || 'Kayıt olurken bir hata oluştu.');
+      console.error('Kayıt hatası:', error); // Debug için
+      console.error('Hata detayları:', error.response?.data); // Debug için
+      
+      if (error.response) {
+        // Sunucudan gelen hata mesajı
+        let errorMessage = 'Kayıt olurken bir hata oluştu.';
+        
+        if (error.response.status === 500) {
+          errorMessage = 'Sunucu hatası. Lütfen daha sonra tekrar deneyin veya farklı bilgilerle kayıt olmayı deneyin.';
+        } else if (error.response.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.response.data?.error) {
+          errorMessage = error.response.data.error;
+        }
+        
+        toast.error(errorMessage);
+        setError(errorMessage);
+      } else if (error.request) {
+        // Ağ hatası
+        const networkError = 'Sunucuya bağlanılamıyor. Lütfen internet bağlantınızı kontrol edin.';
+        toast.error(networkError);
+        setError(networkError);
+      } else {
+        // Diğer hatalar
+        const generalError = 'Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.';
+        toast.error(generalError);
+        setError(generalError);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -125,12 +162,8 @@ const SignUp = () => {
               {...register('password', {
                 required: 'Şifre zorunludur',
                 minLength: {
-                  value: 8,
-                  message: 'Şifre en az 8 karakter olmalıdır'
-                },
-                pattern: {
-                  value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                  message: 'Şifre en az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter içermelidir'
+                  value: 6,
+                  message: 'Şifre en az 6 karakter olmalıdır'
                 }
               })}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#23A6F0]"
@@ -140,15 +173,17 @@ const SignUp = () => {
             )}
           </div>
 
-          {/* Şifre Tekrar */}
+          {/* Şifre Tekrar (Sadece frontend validasyonu için) */}
           <div>
             <label className="block text-[#252B42] mb-2">Şifre Tekrar</label>
             <input
               type="password"
               {...register('password_confirmation', {
                 required: 'Şifre tekrarı zorunludur',
-                validate: (value) =>
-                  value === watch('password') || 'Şifreler eşleşmiyor'
+                validate: (value) => {
+                  const password = watch('password');
+                  return value === password || 'Şifreler eşleşmiyor';
+                }
               })}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#23A6F0]"
             />
@@ -167,11 +202,18 @@ const SignUp = () => {
               defaultValue="1" // Müşteri rolü varsayılan
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#23A6F0]"
             >
-              {roles.map((role) => (
-                <option key={role.id} value={role.id}>
-                  {role.name}
-                </option>
-              ))}
+              {roles.length > 0 ? (
+                roles.map((role) => (
+                  <option key={role.id} value={role.id}>
+                    {role.name}
+                  </option>
+                ))
+              ) : (
+                <>
+                  <option value="1">Müşteri</option>
+                  <option value="2">Mağaza</option>
+                </>
+              )}
             </select>
           </div>
 
@@ -183,7 +225,7 @@ const SignUp = () => {
                 <input
                   type="text"
                   {...register('store_name', {
-                    required: 'Mağaza adı zorunludur',
+                    required: selectedRole === '2' ? 'Mağaza adı zorunludur' : false,
                     minLength: {
                       value: 3,
                       message: 'Mağaza adı en az 3 karakter olmalıdır'
@@ -203,13 +245,14 @@ const SignUp = () => {
                 <input
                   type="tel"
                   {...register('store_phone', {
-                    required: 'Mağaza telefonu zorunludur',
+                    required: selectedRole === '2' ? 'Mağaza telefonu zorunludur' : false,
                     pattern: {
-                      value: /^(\+90|0)?[0-9]{10}$/,
-                      message: 'Geçerli bir Türkiye telefon numarası giriniz'
+                      value: /^\d{10}$/,
+                      message: 'Telefon numarası 10 haneli olmalıdır (örn: 5551234567)'
                     }
                   })}
                   className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#23A6F0]"
+                  placeholder="5551234567"
                 />
                 {errors.store_phone && (
                   <span className="text-red-500 text-sm">
@@ -223,13 +266,14 @@ const SignUp = () => {
                 <input
                   type="text"
                   {...register('store_tax_no', {
-                    required: 'Vergi numarası zorunludur',
+                    required: selectedRole === '2' ? 'Vergi numarası zorunludur' : false,
                     pattern: {
                       value: /^T\d{3}V\d{6}$/,
-                      message: 'Vergi numarası TXXXVXXXXXX formatında olmalıdır'
+                      message: 'Vergi numarası TXXXVXXXXXX formatında olmalıdır (örn: T123V456789)'
                     }
                   })}
                   className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#23A6F0]"
+                  placeholder="T123V456789"
                 />
                 {errors.store_tax_no && (
                   <span className="text-red-500 text-sm">
@@ -243,13 +287,14 @@ const SignUp = () => {
                 <input
                   type="text"
                   {...register('store_bank_account', {
-                    required: 'IBAN zorunludur',
+                    required: selectedRole === '2' ? 'IBAN zorunludur' : false,
                     pattern: {
                       value: /^TR\d{2}\d{5}[A-Z0-9]{17}$/,
-                      message: 'Geçerli bir IBAN giriniz'
+                      message: 'IBAN TR ile başlamalı ve 26 karakter olmalıdır'
                     }
                   })}
                   className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#23A6F0]"
+                  placeholder="TR123456789012345678901234"
                 />
                 {errors.store_bank_account && (
                   <span className="text-red-500 text-sm">

@@ -54,7 +54,11 @@ function AppContent() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/order" element={<CreateOrderPage />} />
+          <Route path="/order" element={
+            <ProtectedRoute>
+              <CreateOrderPage />
+            </ProtectedRoute>
+          } />
           <Route path="/previous-orders" element={
             <ProtectedRoute>
               <PreviousOrders />
@@ -69,10 +73,18 @@ function AppContent() {
 }
 
 function ProtectedRoute({ children }) {
-  const isAuthenticated = useSelector(state => state.user.isAuthenticated);
+  const { isAuthenticated, loading } = useSelector(state => state.user);
+  
+  // Eğer authentication yükleniyorsa, yüklenme tamamlanana kadar bekle
+  if (loading) {
+    return <div className="flex justify-center items-center min-h-screen">Yükleniyor...</div>;
+  }
+  
+  // Authentication yüklendi ama kullanıcı giriş yapmamışsa login'e yönlendir
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
+  
   return children;
 }
 
