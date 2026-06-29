@@ -1,8 +1,15 @@
 import axios from 'axios';
 
+// Backend (Workintech) Render ücretsiz katmanında barınıyor; servis bir süre
+// hareketsiz kalınca uykuya geçer ve ilk istekte ~50 sn'lik soğuk başlangıç
+// yaşanır. Eski 15 sn'lik timeout bu süreye yetmediği için ilk açılışta veriler
+// gelmiyordu. Timeout 60 sn'ye çıkarıldı ve soğuk başlangıç için tek seferlik
+// otomatik yeniden deneme eklendi.
+const REQUEST_TIMEOUT = 60000;
+
 const axiosInstance = axios.create({
   baseURL: 'https://workintech-fe-ecommerce.onrender.com',
-  timeout: 15000,
+  timeout: REQUEST_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
@@ -29,14 +36,20 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('Response error:', error);
-    if (error.code === 'ECONNABORTED') {
-      console.error('Request timeout - Sunucu yanıt vermiyor');
+    const config = error.config;
+
+    // Soğuk başlangıç (timeout) veya geçici ağ hatasında bir kez yeniden dene.
+    const isTimeout = error.code === 'ECONNABORTED';
+    const isNetwork = !error.response && error.message === 'Network Error';
+    if ((isTimeout || isNetwork) && config && !config._retry) {
+      config._retry = true;
+      console.warn('Sunucu uyanıyor olabilir; istek bir kez yeniden deneniyor...');
+      return axiosInstance(config);
     }
+
+    console.error('Response error:', error);
     if (error.response?.status === 401) {
       console.error('401 Unauthorized - Token geçersiz veya eksik');
-      console.error('Response data:', error.response.data);
-      console.error('Current token:', localStorage.getItem('token'));
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
@@ -45,4 +58,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance; 
+export default axiosInstance;
